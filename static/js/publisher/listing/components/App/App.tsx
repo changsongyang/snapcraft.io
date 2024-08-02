@@ -14,6 +14,7 @@ import { initListingTour } from "../../../tour";
 import PageHeader from "../../../shared/PageHeader";
 import SaveAndPreview from "../../../shared/SaveAndPreview";
 import UpdateMetadataModal from "../../../shared/UpdateMetadataModal";
+import SaveStateNotifications from "../../../shared/SaveStateNotifications";
 import ListingDetailsSection from "../../sections/ListingDetailsSection";
 import ContactInformationSection from "../../sections/ContactInformationSection";
 import AdditionalInformationSection from "../../sections/AdditionalInformationSection";
@@ -114,9 +115,12 @@ function App() {
   };
 
   useEffect(() => {
+    const tourContainer = document.getElementById(
+      "tour-container"
+    ) as HTMLElement;
     initListingTour({
       snapName,
-      container: document.getElementById("tour-container"),
+      container: tourContainer,
       formFields: snapData,
       steps: tourSteps,
     });
@@ -174,36 +178,12 @@ function App() {
         )}
 
         <Strip shallow={true} className="u-no-padding--bottom">
-          {hasSaved && (
-            <div className="u-fixed-width">
-              <Notification
-                severity="positive"
-                title="Changes applied successfully."
-                onDismiss={() => {
-                  setHasSaved(false);
-                }}
-              />
-            </div>
-          )}
-
-          {savedError && (
-            <div className="u-fixed-width">
-              <Notification
-                severity="negative"
-                title="Error"
-                onDismiss={() => {
-                  setHasSaved(false);
-                  setSavedError(false);
-                }}
-              >
-                Changes have not been saved.
-                <br />
-                {savedError === true
-                  ? "Something went wrong."
-                  : savedError.map((error) => `${error.message}`).join("\n")}
-              </Notification>
-            </div>
-          )}
+          <SaveStateNotifications
+            hasSaved={hasSaved}
+            setHasSaved={setHasSaved}
+            savedError={savedError}
+            setSavedError={setSavedError}
+          />
 
           <ListingDetailsSection
             register={register}
